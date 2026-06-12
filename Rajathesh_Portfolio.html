@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rajathesh H M — Sports Data Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+============================================================ */
+:root {
+  --pitch-black:   #080C10;
+  --surface-01:    #0E1318;
+  --surface-02:    #141C24;
+  --surface-03:    #1C2630;
+  --line-dim:      rgba(255,255,255,0.06);
+  --line-mid:      rgba(255,255,255,0.12);
+  --line-bright:   rgba(255,255,255,0.22);
+
+  --data-green:    #00E096;
+  --data-green-dim:#00E09622;
+  --accent-blue:   #3B82F6;
+  --accent-amber:  #F59E0B;
+  --text-primary:  #F0F4F8;
+  --text-secondary:#8A9BB0;
+  --text-muted:    #4A5D72;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono:    'Space Mono', monospace;
+  --font-body:    'Inter', sans-serif;
+}
+
+/* ============================================================
+   RESET & BASE
+============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--pitch-black);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* Pitch-line grid overlay — the signature element */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--line-dim) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-dim) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+section, nav, footer { position: relative; z-index: 1; }
+
+a { color: inherit; text-decoration: none; }
+
+img { display: block; max-width: 100%; }
+
+/* ============================================================
+   TYPOGRAPHY
+============================================================ */
+.label-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--data-green);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.label-eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--data-green);
+  flex-shrink: 0;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+h1 { font-size: clamp(2.8rem, 6vw, 5rem); }
+h2 { font-size: clamp(2rem, 4vw, 3rem); }
+h3 { font-size: 1.25rem; }
+
+p { color: var(--text-secondary); }
+
+/* ============================================================
+   LAYOUT UTILITIES
+============================================================ */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section-pad {
+  padding: 100px 0;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+/* ============================================================
+   NAV
+============================================================ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(8,12,16,0.85);
+  border-bottom: 1px solid var(--line-dim);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.nav-logo {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--data-green);
+  letter-spacing: .08em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--text-secondary);
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text-primary); }
+
+.nav-cta {
+  background: var(--data-green);
+  color: #000 !important;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  font-weight: 700 !important;
+  transition: opacity .2s !important;
+}
+.nav-cta:hover { opacity: .85; }
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--data-green);
+  color: #000;
+}
+.btn-primary:hover { opacity: .85; transform: translateY(-1px); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--line-bright);
+}
+.btn-outline:hover {
+  border-color: var(--data-green);
+  color: var(--data-green);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   HERO
+============================================================ */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 64px;
+  overflow: hidden;
+}
+
+/* Pitch centre-circle decoration */
+#hero::after {
+  content: '';
+  position: absolute;
+  right: -200px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  border: 1px solid var(--line-mid);
+  pointer-events: none;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 80px;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--data-green-dim);
+  border: 1px solid rgba(0,224,150,0.25);
+  border-radius: 2px;
+  padding: 6px 14px;
+  margin-bottom: 28px;
+}
+.hero-tag span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: var(--data-green);
+}
+.hero-tag .dot {
+  width: 6px; height: 6px;
+  background: var(--data-green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+.hero-title { margin-bottom: 24px; }
+.hero-title .name {
+  display: block;
+  color: var(--text-primary);
+}
+.hero-title .role {
+  display: block;
+  background: linear-gradient(135deg, var(--data-green), var(--accent-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-bio {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 560px;
+  margin-bottom: 36px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
+}
+.stat-item { }
+.stat-number {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.stat-number span { color: var(--data-green); }
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: .06em;
+  margin-top: 4px;
+}
+
+/* Photo placeholder */
+.hero-photo-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.hero-photo {
+  width: 300px;
+  height: 370px;
+  background: var(--surface-02);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  overflow: hidden;
+  position: relative;
+}
+.hero-photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, var(--data-green-dim), transparent 60%);
+}
+.photo-icon {
+  width: 64px; height: 64px;
+  background: var(--surface-03);
+  border-radius: 50%;
+  border: 2px solid var(--line-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.photo-icon svg { opacity: .5; }
+.photo-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: .1em;
+  position: relative;
+  z-index: 1;
+}
+.hero-photo-badge {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--data-green);
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  padding: 6px 16px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   SECTION HEADER
+============================================================ */
+.section-header {
+  margin-bottom: 56px;
+}
+.section-header h2 {
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+.section-header p {
+  max-width: 600px;
+  font-size: 1.05rem;
+}
+
+/* ============================================================
+   ABOUT
+============================================================ */
+#about {
+  background: var(--surface-01);
+  border-top: 1px solid var(--line-dim);
+  border-bottom: 1px solid var(--line-dim);
+}
+
+.about-text h3 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+.about-text p {
+  margin-bottom: 18px;
+}
+
+.about-edu {
+  background: var(--surface-02);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  margin-top: 24px;
+}
+.about-edu h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  color: var(--data-green);
+  margin-bottom: 18px;
+  text-transform: uppercase;
+}
+.edu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line-dim);
+}
+.edu-item:last-child { border-bottom: none; padding-bottom: 0; }
+.edu-degree { font-weight: 600; color: var(--text-primary); font-family: var(--font-display); }
+.edu-year {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--data-green);
+  white-space: nowrap;
+}
+
+.about-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+.value-chip {
+  background: var(--surface-02);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.value-chip::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--data-green);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   EXPERIENCE
+============================================================ */
+#experience { background: var(--pitch-black); }
+
+.exp-card {
+  background: var(--surface-01);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.exp-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--data-green), var(--accent-blue));
+}
+
+.exp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.exp-company {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.company-logo {
+  width: 48px; height: 48px;
+  background: var(--surface-03);
+  border: 1px solid var(--line-bright);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--data-green);
+  letter-spacing: .04em;
+}
+.exp-meta h3 {
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.exp-meta .company-name {
+  color: var(--data-green);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.exp-period {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--surface-02);
+  border: 1px solid var(--line-dim);
+  padding: 6px 14px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.exp-responsibilities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.resp-card {
+  background: var(--surface-02);
+  border: 1px solid var(--line-dim);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  transition: border-color .2s;
+}
+.resp-card:hover { border-color: var(--data-green); }
+.resp-sport {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .14em;
+  color: var(--accent-amber);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.resp-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.resp-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ============================================================
+   SKILLS
+============================================================ */
+#skills {
+  background: var(--surface-01);
+  border-top: 1px solid var(--line-dim);
+  border-bottom: 1px solid var(--line-dim);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.skills-category {
+  background: var(--surface-02);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-md);
+  padding: 32px;
+}
+.skills-cat-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  color: var(--data-green);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.skills-cat-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line-mid);
+}
+
+.skill-item {
+  margin-bottom: 18px;
+}
+.skill-item:last-child { margin-bottom: 0; }
+.skill-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.skill-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.skill-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent-amber);
+  letter-spacing: .06em;
+}
+.skill-bar {
+  height: 3px;
+  background: var(--surface-03);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.skill-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--data-green), var(--accent-blue));
+  transition: width 1s ease;
+}
+
+/* ============================================================
+   PROJECTS
+============================================================ */
+#projects { background: var(--pitch-black); }
+
+.project-card {
+  background: var(--surface-01);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform .2s, border-color .2s;
+}
+.project-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0,224,150,0.3);
+}
+
+.project-visual {
+  height: 180px;
+  background: var(--surface-02);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.project-visual svg { opacity: .25; }
+
+/* Mini pitch diagram for project 1 */
+.pitch-mini {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.project-body { padding: 28px; }
+.project-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--data-green);
+  letter-spacing: .12em;
+  margin-bottom: 10px;
+}
+.project-title {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.project-desc {
+  font-size: 13.5px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+.project-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.metric-chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--surface-02);
+  border: 1px solid var(--line-dim);
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+.project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+.tech-tag {
+  font-size: 12px;
+  color: var(--data-green);
+  background: var(--data-green-dim);
+  border: 1px solid rgba(0,224,150,0.2);
+  padding: 3px 10px;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.btn-sm {
+  padding: 10px 20px;
+  font-size: 13px;
+}
+
+/* ============================================================
+   SPORTS PORTFOLIO
+============================================================ */
+#sports {
+  background: var(--surface-01);
+  border-top: 1px solid var(--line-dim);
+  border-bottom: 1px solid var(--line-dim);
+}
+
+.sport-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+.sport-card {
+  background: var(--surface-02);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-md);
+  padding: 32px;
+  text-align: center;
+  transition: border-color .2s, transform .2s;
+  position: relative;
+  overflow: hidden;
+}
+.sport-card:hover {
+  border-color: var(--data-green);
+  transform: translateY(-3px);
+}
+.sport-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--data-green), transparent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.sport-card:hover::before { opacity: 1; }
+
+.sport-icon {
+  width: 64px; height: 64px;
+  margin: 0 auto 20px;
+  background: var(--surface-03);
+  border-radius: 50%;
+  border: 1px solid var(--line-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+.sport-name {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.sport-desc {
+  font-size: 13.5px;
+  margin-bottom: 20px;
+}
+.sport-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+.sport-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+  border: 1px solid var(--line-dim);
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   CAREER VISION
+============================================================ */
+#vision { background: var(--pitch-black); }
+
+.vision-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.vision-card {
+  background: var(--surface-01);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-md);
+  padding: 28px 24px;
+  transition: border-color .2s;
+}
+.vision-card:hover { border-color: var(--data-green); }
+.vision-icon {
+  width: 40px; height: 40px;
+  background: var(--data-green-dim);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+.vision-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.vision-desc { font-size: 13px; }
+
+.vision-statement {
+  background: var(--surface-01);
+  border: 1px solid var(--line-mid);
+  border-left: 3px solid var(--data-green);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 32px;
+  margin-top: 32px;
+}
+.vision-statement p {
+  font-size: 1.1rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+.vision-statement strong { color: var(--text-primary); }
+
+/* ============================================================
+   TARGET COMPANIES
+============================================================ */
+#targets {
+  background: var(--surface-01);
+  border-top: 1px solid var(--line-dim);
+  border-bottom: 1px solid var(--line-dim);
+  padding: 60px 0;
+}
+.targets-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  color: var(--text-muted);
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.companies-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.company-pill {
+  background: var(--surface-02);
+  border: 1px solid var(--line-mid);
+  border-radius: 40px;
+  padding: 10px 24px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all .2s;
+}
+.company-pill:hover {
+  border-color: var(--data-green);
+  color: var(--data-green);
+}
+.company-pill.active {
+  background: var(--data-green-dim);
+  border-color: rgba(0,224,150,0.3);
+  color: var(--data-green);
+}
+
+/* ============================================================
+   CONTACT
+============================================================ */
+#contact { background: var(--pitch-black); }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.contact-info h2 { margin-bottom: 20px; }
+.contact-info > p { margin-bottom: 36px; font-size: 1.05rem; }
+
+.contact-items { display: flex; flex-direction: column; gap: 16px; }
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface-01);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  transition: border-color .2s;
+}
+.contact-item:hover { border-color: var(--data-green); }
+.contact-icon {
+  width: 36px; height: 36px;
+  background: var(--data-green-dim);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.contact-detail .label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.contact-detail .value {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.contact-form {
+  background: var(--surface-01);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+}
+.form-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 28px;
+}
+.form-group { margin-bottom: 20px; }
+.form-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.form-input, .form-textarea {
+  width: 100%;
+  background: var(--surface-02);
+  border: 1px solid var(--line-mid);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  transition: border-color .2s;
+  outline: none;
+}
+.form-input:focus, .form-textarea:focus {
+  border-color: var(--data-green);
+}
+.form-textarea { resize: vertical; min-height: 110px; }
+.form-input::placeholder, .form-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+footer {
+  background: var(--surface-01);
+  border-top: 1px solid var(--line-dim);
+  padding: 36px 0;
+}
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.footer-links {
+  display: flex;
+  gap: 28px;
+}
+.footer-links a {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: color .2s;
+}
+.footer-links a:hover { color: var(--data-green); }
+
+/* ============================================================
+   SCROLL ANIMATIONS
+============================================================ */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .vision-grid { grid-template-columns: repeat(2, 1fr); }
+  .exp-responsibilities { grid-template-columns: repeat(2, 1fr); }
+  .event-grid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .hero-photo-wrap { order: -1; }
+  .hero-photo { width: 100%; height: 240px; }
+  h1 { font-size: 2.4rem; }
+  .grid-2, .skills-grid, .contact-grid { grid-template-columns: 1fr; gap: 28px; }
+  .grid-3, .sport-cards { grid-template-columns: 1fr; }
+  .exp-responsibilities { grid-template-columns: 1fr; }
+  .vision-grid { grid-template-columns: 1fr 1fr; }
+  .hero-stats { gap: 24px; }
+  .section-pad { padding: 70px 0; }
+  .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+  .event-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  /* Workflow: stack vertically on mobile */
+  #workflow .fade-up[style*="grid-template-columns: repeat(5"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-values { grid-template-columns: 1fr; }
+  .vision-grid { grid-template-columns: 1fr; }
+  .companies-row { gap: 8px; }
+  .company-pill { padding: 8px 16px; font-size: 13px; }
+}
+
+/* ============================================================
+   CUSTOM SCROLLBAR
+============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--surface-01); }
+::-webkit-scrollbar-thumb {
+  background: var(--surface-03);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--data-green); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">RHM // SPORTS ANALYST</div>
+    <ul class="nav-links">
+      <li><a href="javascript:void(0)" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About</a></li>
+      <li><a href="javascript:void(0)" onclick="document.getElementById('experience').scrollIntoView({behavior:'smooth'})">Experience</a></li>
+      <li><a href="javascript:void(0)" onclick="document.getElementById('skills').scrollIntoView({behavior:'smooth'})">Skills</a></li>
+      <li><a href="javascript:void(0)" onclick="document.getElementById('event-knowledge').scrollIntoView({behavior:'smooth'})">Events</a></li>
+      <li><a href="javascript:void(0)" onclick="document.getElementById('workflow').scrollIntoView({behavior:'smooth'})">Workflow</a></li>
+      <li><a href="javascript:void(0)" onclick="document.getElementById('vision').scrollIntoView({behavior:'smooth'})">Vision</a></li>
+      <li><a class="nav-cta" href="javascript:void(0)" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-tag">
+        <div class="dot"></div>
+        <span>Available for opportunities</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="name">Rajathesh H M</span>
+        <span class="role">Sports Data Analyst</span>
+      </h1>
+      <p class="hero-bio">
+        Turning raw match events into structured, high-quality sports data. I specialise in football event tagging, video analysis workflows, and data quality assurance — building the reliable data pipelines that power elite performance analysis.
+      </p>
+      <div class="hero-actions">
+        <button onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" class="btn btn-primary">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Get in touch
+        </button>
+        <a href="https://www.linkedin.com/in/rajathesh-hm/" target="_blank" class="btn btn-outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number" style="font-size:1.1rem; letter-spacing:.04em;">⚽</div>
+          <div class="stat-label">Football</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" style="font-size:1.1rem;">🏀</div>
+          <div class="stat-label">Basketball</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" style="font-size:1.1rem;">🏐</div>
+          <div class="stat-label">Volleyball</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" style="font-size:.75rem; letter-spacing:.03em; padding-top:4px; color: var(--data-green);">OPS</div>
+          <div class="stat-label">Data Operations</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" style="font-size:.75rem; letter-spacing:.03em; padding-top:4px; color: var(--data-green);">QA</div>
+          <div class="stat-label">Quality Focused</div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section-pad">
+  <div class="container">
+    <div class="grid-2">
+      <div class="fade-up">
+        <div class="label-eyebrow">About me</div>
+        <div class="about-text">
+          <h3 style="margin-top: 14px;">From Commerce to the Data Sideline</h3>
+          <p>
+            My path into sports analytics started with a genuine obsession for football — not just watching the game, but understanding the patterns behind it. While studying commerce, I recognised that the future of football performance was being built on data, and I positioned myself to be part of that future.
+          </p>
+          <p>
+            At Hudl, I've developed a deep understanding of how raw video footage becomes the structured, high-quality event data that clubs, broadcasters, and analytics companies rely on. Working across football, basketball, and volleyball has sharpened my eye for detail and my instinct for accuracy.
+          </p>
+          <p>
+            My long-term focus is football analytics — combining operational data expertise with performance insight to support clubs, coaches, and analysts who are redefining how the game is understood.
+          </p>
+          <div class="about-values">
+            <div class="value-chip">Data Quality First</div>
+            <div class="value-chip">Football Analytics</div>
+            <div class="value-chip">Performance Insights</div>
+            <div class="value-chip">Continuous Learning</div>
+            <div class="value-chip">Event Data Operations</div>
+            <div class="value-chip">Video Analysis</div>
+          </div>
+        </div>
+      </div>
+      <div class="fade-up">
+        <div class="about-edu">
+          <h4>Academic Background</h4>
+          <div class="edu-item">
+            <div>
+              <div class="edu-degree">Master of Commerce (M.Com)</div>
+              <div style="font-size:13px; color: var(--text-muted); margin-top:3px;">Postgraduate · Business & Analytics</div>
+            </div>
+            <div class="edu-year">2025</div>
+          </div>
+          <div class="edu-item">
+            <div>
+              <div class="edu-degree">Bachelor of Commerce (B.Com)</div>
+              <div style="font-size:13px; color: var(--text-muted); margin-top:3px;">Undergraduate · Commerce</div>
+            </div>
+            <div class="edu-year">2023</div>
+          </div>
+        </div>
+
+        <div style="background: var(--surface-02); border: 1px solid var(--line-mid); border-radius: var(--radius-md); padding: 28px; margin-top: 20px;">
+          <h4 style="font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; color: var(--data-green); margin-bottom: 18px; text-transform: uppercase;">Currently targeting</h4>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-secondary);">
+              <span style="color: var(--data-green);">→</span> Football Analytics Analyst
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-secondary);">
+              <span style="color: var(--data-green);">→</span> Sports Data Operations Specialist
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-secondary);">
+              <span style="color: var(--data-green);">→</span> Performance Data Analyst
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-secondary);">
+              <span style="color: var(--data-green);">→</span> QA Lead — Sports Data
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="section-pad">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="label-eyebrow">Experience</div>
+      <h2>Where I've Worked</h2>
+      <p>Building operational expertise across football, basketball, and volleyball data at one of the world's leading sports technology platforms.</p>
+    </div>
+    <div class="exp-card fade-up">
+      <div class="exp-header">
+        <div class="exp-company">
+          <div class="company-logo">HUDL</div>
+          <div class="exp-meta">
+            <h3>Sports Analyst</h3>
+            <div class="company-name">Hudl · Sports Technology</div>
+          </div>
+        </div>
+        <div class="exp-period">2023 — Present</div>
+      </div>
+      <div class="exp-responsibilities">
+        <div class="resp-card">
+          <div class="resp-sport">Football</div>
+          <div class="resp-title">Event Tagging & Analysis</div>
+          <div class="resp-desc">Precise identification and tagging of in-game football events — passes, shots, defensive actions, set pieces — to exacting quality standards for club and broadcast clients.</div>
+        </div>
+        <div class="resp-card">
+          <div class="resp-sport">Basketball</div>
+          <div class="resp-title">Basketball Data Operations</div>
+          <div class="resp-desc">Event tagging of basketball matches including shot charts, possession transitions, and defensive assignments. Consistent output across live and replay workflows.</div>
+        </div>
+        <div class="resp-card">
+          <div class="resp-sport">Volleyball</div>
+          <div class="resp-title">Volleyball Event Capture</div>
+          <div class="resp-desc">Structured collection of volleyball match events — rallies, serves, attacks, and blocks — ensuring data integrity across international competitions.</div>
+        </div>
+        <div class="resp-card">
+          <div class="resp-sport">Data QA</div>
+          <div class="resp-title">Quality Assurance</div>
+          <div class="resp-desc">Cross-validating tagged data against video footage to eliminate inconsistencies. Upholding strict accuracy benchmarks before data reaches downstream analytics platforms.</div>
+        </div>
+        <div class="resp-card">
+          <div class="resp-sport">Video</div>
+          <div class="resp-title">Video Analysis Workflows</div>
+          <div class="resp-desc">Operating professional video analysis tooling to extract events from recorded and live match feeds. Managing end-to-end tagging pipelines efficiently under time constraints.</div>
+        </div>
+        <div class="resp-card">
+          <div class="resp-sport">Standards</div>
+          <div class="resp-title">Consistency & Accuracy</div>
+          <div class="resp-desc">Applying standardised event definitions across multiple sports and markets. Maintaining inter-operator consistency to ensure reliable, comparable datasets for analytics use.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="section-pad">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="label-eyebrow">Skills</div>
+      <h2>Technical & Analytical Toolkit</h2>
+      <p>Sports data proficiency combined with a growing technical stack in data analytics and business intelligence tools.</p>
+    </div>
+    <div class="skills-grid fade-up">
+      <div class="skills-category">
+        <div class="skills-cat-label">Sports Data Skills</div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Event Tagging</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Football Analysis</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Match Analysis</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Data Collection</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:92%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Quality Assurance</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:93%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Performance Analysis</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:82%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Video Analysis</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+        </div>
+      </div>
+      <div class="skills-category">
+        <div class="skills-cat-label">Technical Skills</div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Microsoft Excel</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Google Sheets</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Data Validation</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row"><span class="skill-name">Data Analytics</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:78%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row">
+            <span class="skill-name">SQL</span>
+            <span class="skill-tag">LEARNING</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="width:40%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-row">
+            <span class="skill-name">Power BI</span>
+            <span class="skill-tag">LEARNING</span>
+          </div>
+          <div class="skill-bar"><div class="skill-fill" style="width:35%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTBALL EVENT KNOWLEDGE -->
+<section id="event-knowledge" class="section-pad">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="label-eyebrow">Football Event Knowledge</div>
+      <h2>Event Taxonomy</h2>
+      <p>A working knowledge of football event definitions is the foundation of accurate data collection. These are the core events I identify, classify, and tag across matches.</p>
+      <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted); font-style: italic; font-family: var(--font-mono); letter-spacing: .02em;">Note: The event definitions shown below are simplified explanations based on my understanding of football data collection concepts and are intended for portfolio purposes.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;" class="fade-up event-grid">
+
+      <div class="resp-card">
+        <div class="resp-sport">Attacking</div>
+        <div class="resp-title">Pass</div>
+        <div class="resp-desc">An intentional play by a player to direct the ball to a teammate. Classified by direction, length, body part, and outcome — completed or incomplete.</div>
+      </div>
+
+      <div class="resp-card">
+        <div class="resp-sport">Attacking</div>
+        <div class="resp-title">Cross</div>
+        <div class="resp-desc">A pass delivered from a wide area into the penalty box, typically targeting attacking players. Tagged by delivery type — open play, set piece, or cutback.</div>
+      </div>
+
+      <div class="resp-card">
+        <div class="resp-sport">Attacking</div>
+        <div class="resp-title">Through Ball</div>
+        <div class="resp-desc">A pass played into space behind the defensive line to release a teammate into a goalscoring position. Requires precise timing and spatial awareness to identify correctly.</div>
+      </div>
+
+      <div class="resp-card">
+        <div class="resp-sport">Attacking</div>
+        <div class="resp-title">Assist</div>
+        <div class="resp-desc">The final action — pass, cross, or touch — that directly leads to a goal being scored. Distinguished from secondary assists and chance-creation actions.</div>
+      </div>
+
+      <div class="resp-card">
+        <div class="resp-sport">Shooting</div>
+        <div class="resp-title">Shot</div>
+        <div class="resp-desc">Any deliberate attempt by a player to score a goal. Categorised by body part used, shot type (e.g. header, volley), and the resulting outcome — goal, saved, blocked, or off target.</div>
+      </div>
+
+      <div class="resp-card">
+        <div class="resp-sport">Shooting</div>
+        <div class="resp-title">Shot on Target</div>
+        <div class="resp-desc">A shot that is on course to enter the goal but is saved by the goalkeeper or stopped on the line. A key metric for measuring attacking threat and goalkeeping performance.</div>
+      </div>
+
+      <div class="resp-card">
+        <div class="resp-sport">Defensive</div>
+        <div class="resp-title">Tackle</div>
+        <div class="resp-desc">A physical challenge in which a defending player attempts to win the ball from an opponent. Tagged as successful (ball won) or unsuccessful, with location recorded.</div>
+      </div>
+
+      <div class="resp-card">
+        <div class="resp-sport">Defensive</div>
+        <div class="resp-title">Interception</div>
+        <div class="resp-desc">A defensive action where a player reads and cuts out a pass intended for an opponent, preventing the ball from reaching its target. Reflects positioning and anticipation.</div>
+      </div>
+
+      <div class="resp-card">
+        <div class="resp-sport">Defensive</div>
+        <div class="resp-title">Clearance</div>
+        <div class="resp-desc">A defensive action where a player removes the ball from a dangerous area near their own goal. Tagged by method — headed, with foot — and whether possession was retained.</div>
+      </div>
+
+      <div class="resp-card">
+        <div class="resp-sport">Contested</div>
+        <div class="resp-title">Duel</div>
+        <div class="resp-desc">A contested physical situation between two players — aerial or ground. Aerial duels involve heading contests; ground duels cover shoulder-to-shoulder challenges and tackles. Outcome recorded as won, lost, or draw.</div>
+      </div>
+
+      <div class="resp-card">
+        <div class="resp-sport">Defensive</div>
+        <div class="resp-title">Recovery</div>
+        <div class="resp-desc">A situation where a player regains possession of a loose ball with no direct opponent challenge. Indicates pressing effectiveness and defensive organisation when tracked at a team level.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SPORTS DATA OPERATIONS WORKFLOW -->
+<section id="workflow" class="section-pad" style="background: var(--surface-01); border-top: 1px solid var(--line-dim); border-bottom: 1px solid var(--line-dim);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="label-eyebrow">Sports Data Operations</div>
+      <h2>The Workflow</h2>
+      <p>Every data point starts with a structured process. Here is how a sports data analyst moves from match assignment to final submission while maintaining the quality standards that downstream analytics depend on.</p>
+    </div>
+    <div class="fade-up" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; align-items: stretch; margin-bottom: 48px;">
+
+      <div style="background: var(--surface-02); border: 1px solid var(--line-mid); border-radius: var(--radius-sm) 0 0 var(--radius-sm); padding: 28px 20px; text-align: center; position: relative;">
+        <div style="width: 40px; height: 40px; background: var(--data-green-dim); border: 1px solid rgba(0,224,150,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--data-green);">01</div>
+        <div style="font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Match Assignment</div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Receive match file, competition details, and event specification guidelines for the fixture.</div>
+        <div style="position: absolute; right: -13px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; background: var(--surface-03); border: 1px solid var(--line-bright); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2; font-size: 11px; color: var(--data-green);">→</div>
+      </div>
+
+      <div style="background: var(--surface-02); border: 1px solid var(--line-mid); border-left: none; padding: 28px 20px; text-align: center; position: relative;">
+        <div style="width: 40px; height: 40px; background: var(--data-green-dim); border: 1px solid rgba(0,224,150,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--data-green);">02</div>
+        <div style="font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Video Review</div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Watch footage to understand the flow of the match, identify key phases, and prepare for tagging.</div>
+        <div style="position: absolute; right: -13px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; background: var(--surface-03); border: 1px solid var(--line-bright); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2; font-size: 11px; color: var(--data-green);">→</div>
+      </div>
+
+      <div style="background: var(--surface-02); border: 1px solid var(--line-mid); border-left: none; padding: 28px 20px; text-align: center; position: relative;">
+        <div style="width: 40px; height: 40px; background: var(--data-green-dim); border: 1px solid rgba(0,224,150,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--data-green);">03</div>
+        <div style="font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Event Tagging</div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Tag all match events — passes, shots, duels, and more — against standardised definitions with precise timestamps.</div>
+        <div style="position: absolute; right: -13px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; background: var(--surface-03); border: 1px solid var(--line-bright); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2; font-size: 11px; color: var(--data-green);">→</div>
+      </div>
+
+      <div style="background: var(--surface-02); border: 1px solid var(--line-mid); border-left: none; padding: 28px 20px; text-align: center; position: relative;">
+        <div style="width: 40px; height: 40px; background: var(--data-green-dim); border: 1px solid rgba(0,224,150,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--data-green);">04</div>
+        <div style="font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Quality Check</div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Review tagged output against the footage for accuracy, completeness, and consistency with event specifications.</div>
+        <div style="position: absolute; right: -13px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; background: var(--surface-03); border: 1px solid var(--line-bright); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2; font-size: 11px; color: var(--data-green);">→</div>
+      </div>
+
+      <div style="background: var(--surface-02); border: 1px solid var(--line-mid); border-left: none; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 28px 20px; text-align: center;">
+        <div style="width: 40px; height: 40px; background: rgba(0,224,150,0.15); border: 1px solid var(--data-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 16px;">✓</div>
+        <div style="font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--data-green); margin-bottom: 8px;">Final Submission</div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Submit verified, clean data ready for analytics platforms, broadcast systems, or club pipelines.</div>
+      </div>
+
+    </div>
+
+    <div class="fade-up" style="background: var(--surface-02); border: 1px solid var(--line-mid); border-left: 3px solid var(--data-green); border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: 28px 32px;">
+      <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; color: var(--data-green); margin-bottom: 14px; text-transform: uppercase;">Why the process matters</div>
+      <p style="font-size: 1rem; line-height: 1.75; color: var(--text-secondary);">
+        Sports data is only as valuable as it is reliable. Throughout every stage of this workflow, consistency and accuracy are non-negotiable — a misclassified event, a missed timestamp, or an inconsistent definition can skew the metrics that coaches, analysts, and clubs use to make decisions. Through my experience at Hudl, I've developed the discipline to follow this process precisely, cross-reference my output against event specifications, and treat every match with the same standard of care regardless of competition level or sport.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT I'VE LEARNED -->
+<section id="learned" class="section-pad">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="label-eyebrow">Professional Development</div>
+      <h2>What I've Learned in Sports Data Operations</h2>
+      <p>Working in a professional sports data environment has taught me skills that go well beyond tagging. These are the principles that shape how I approach every piece of work.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;" class="fade-up">
+
+      <div class="vision-card">
+        <div class="vision-icon">🎯</div>
+        <div class="vision-title">Importance of Accuracy</div>
+        <p class="vision-desc">In sports data, a single incorrect event can distort a player's statistics or a team's tactical profile. I've learned to work methodically — pausing, re-watching, and verifying before tagging — because accuracy is the baseline expectation, not an extra effort.</p>
+      </div>
+
+      <div class="vision-card">
+        <div class="vision-icon">📐</div>
+        <div class="vision-title">Maintaining Consistency</div>
+        <p class="vision-desc">When many analysts work across the same dataset, consistency is what makes the data trustworthy. I've developed the habit of applying the same definitions and decision-making framework regardless of the match, league, or operator I'm working alongside.</p>
+      </div>
+
+      <div class="vision-card">
+        <div class="vision-icon">📖</div>
+        <div class="vision-title">Understanding Sport-Specific Rules</div>
+        <p class="vision-desc">Each sport has its own set of rules, rhythms, and event types. Tagging football is fundamentally different from tagging basketball or volleyball. Building genuine sport-specific knowledge has made me a more confident and precise data collector across all three.</p>
+      </div>
+
+      <div class="vision-card">
+        <div class="vision-icon">🔄</div>
+        <div class="vision-title">Working Across Multiple Sports</div>
+        <p class="vision-desc">Switching contexts between football, basketball, and volleyball has built my adaptability. I've learned how to shift my mental model quickly, apply sport-specific frameworks, and maintain quality output across very different event structures and competition formats.</p>
+      </div>
+
+      <div class="vision-card">
+        <div class="vision-icon">🌐</div>
+        <div class="vision-title">Remote Collaboration</div>
+        <p class="vision-desc">Sports data operations at scale are distributed by nature. I've learned how to work independently while staying aligned with team standards, communicate clearly about edge cases, and contribute reliably to shared pipelines without direct supervision.</p>
+      </div>
+
+      <div class="vision-card">
+        <div class="vision-icon">📈</div>
+        <div class="vision-title">Continuous Improvement</div>
+        <p class="vision-desc">The event specifications and quality benchmarks in sports data evolve as the industry does. I've learned to treat feedback as a tool for growth, to revisit my own work critically, and to keep learning — whether that's a new event type, a new sport, or a new analytics concept.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SPORTS PORTFOLIO -->
+<section id="sports" class="section-pad">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="label-eyebrow">Sports Portfolio</div>
+      <h2>Multi-Sport Expertise</h2>
+      <p>Operational experience tagging professional and semi-professional competitions across three major sports, each with distinct event taxonomies and quality requirements.</p>
+    </div>
+    <div class="sport-cards">
+      <div class="sport-card fade-up">
+        <div class="sport-icon">⚽</div>
+        <div class="sport-name">Football</div>
+        <p class="sport-desc">
+          Primary specialism. Deep knowledge of football event structures — from in-play actions to set pieces, pressing maps, and transition sequences. Focus on precision tagging aligned to StatsBomb and Opta-style taxonomies.
+        </p>
+        <div class="sport-tags">
+          <span class="sport-tag">Event Tagging</span>
+          <span class="sport-tag">Set Pieces</span>
+          <span class="sport-tag">Pressing Data</span>
+          <span class="sport-tag">Tactical Analysis</span>
+          <span class="sport-tag">xG / xA</span>
+        </div>
+      </div>
+      <div class="sport-card fade-up">
+        <div class="sport-icon">🏀</div>
+        <div class="sport-name">Basketball</div>
+        <p class="sport-desc">
+          Structured event tagging of basketball matches covering shot selection, defensive assignments, transition plays, and possession-level statistics. Applied across domestic and international competitions.
+        </p>
+        <div class="sport-tags">
+          <span class="sport-tag">Shot Tracking</span>
+          <span class="sport-tag">Possession Data</span>
+          <span class="sport-tag">Defensive Events</span>
+          <span class="sport-tag">Play-by-Play</span>
+        </div>
+      </div>
+      <div class="sport-card fade-up">
+        <div class="sport-icon">🏐</div>
+        <div class="sport-name">Volleyball</div>
+        <p class="sport-desc">
+          Comprehensive capture of volleyball match events including serve classification, attack outcomes, block actions, and rally construction. Maintaining consistent data standards across international tournaments.
+        </p>
+        <div class="sport-tags">
+          <span class="sport-tag">Rally Analysis</span>
+          <span class="sport-tag">Serve Data</span>
+          <span class="sport-tag">Attack Zones</span>
+          <span class="sport-tag">Match Events</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAREER VISION -->
+<section id="vision" class="section-pad">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="label-eyebrow">Career Vision</div>
+      <h2>Where I'm Headed</h2>
+      <p>Grounded in professional sports data operations, I'm building toward specialist roles in football analytics, quality assurance, and data team development.</p>
+    </div>
+    <div class="vision-grid fade-up">
+      <div class="vision-card">
+        <div class="vision-icon">⚽</div>
+        <div class="vision-title">Football Specialisation</div>
+        <p class="vision-desc">My primary goal is to deepen my specialism in football data — developing expertise in event taxonomy, tactical context, and football-specific analytics frameworks used by professional clubs and data companies.</p>
+      </div>
+      <div class="vision-card">
+        <div class="vision-icon">📊</div>
+        <div class="vision-title">Football Analytics</div>
+        <p class="vision-desc">I want to progress from data collection into analytical work — contributing to the production of football insights that support performance departments, scouting teams, and coaching staff in making data-informed decisions.</p>
+      </div>
+      <div class="vision-card">
+        <div class="vision-icon">⚙️</div>
+        <div class="vision-title">Sports Data Operations</div>
+        <p class="vision-desc">I aim to take on greater responsibility within data operations — working on workflow design, process improvement, and event specification development to help organisations scale their data collection reliably and efficiently.</p>
+      </div>
+      <div class="vision-card">
+        <div class="vision-icon">✅</div>
+        <div class="vision-title">Quality Assurance</div>
+        <p class="vision-desc">QA is the backbone of credible sports data. I want to develop deeper expertise in data quality frameworks — reviewing, auditing, and improving the processes that keep datasets accurate and consistent across analysts and competitions.</p>
+      </div>
+      <div class="vision-card">
+        <div class="vision-icon">💡</div>
+        <div class="vision-title">Insights Teams</div>
+        <p class="vision-desc">I'm interested in contributing to insights functions within football analytics companies or clubs — helping translate structured event data into the performance reports, dashboards, and narratives that coaches and analysts rely on.</p>
+      </div>
+      <div class="vision-card">
+        <div class="vision-icon">🎓</div>
+        <div class="vision-title">Training & Development</div>
+        <p class="vision-desc">As I continue developing in the field, I'm interested in supporting the onboarding and development of new analysts by sharing operational knowledge, quality standards, and football data best practices.</p>
+      </div>
+    </div>
+    <div class="vision-statement fade-up">
+      <p>
+        "My goal is to build a long-term career in <strong>football data and analytics</strong> — starting from a strong operational foundation and growing toward roles where I can contribute to <strong>football performance insights, quality assurance, and data operations</strong> at a professional level. I want to work in an environment where the quality of data genuinely matters, and where my attention to detail and sport knowledge can make a real contribution."
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- TARGET COMPANIES -->
+<section id="targets">
+  <div class="container">
+    <div class="targets-label">Open to opportunities at</div>
+    <div class="companies-row">
+      <div class="company-pill active">Hudl</div>
+      <div class="company-pill">Gradient Sports</div>
+      <div class="company-pill">StatsBomb</div>
+      <div class="company-pill">Opta</div>
+      <div class="company-pill">Football Analytics Companies</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section-pad">
+  <div class="container">
+    <div class="contact-grid" style="grid-template-columns: 1fr; max-width: 600px;">
+      <div class="fade-up">
+        <div class="label-eyebrow">Contact</div>
+        <h2 style="margin-top: 14px; margin-bottom: 20px;">Let's Talk Football Data</h2>
+        <p style="margin-bottom: 16px; font-size: 1.05rem;">
+          Whether you're building an analytics team, looking for a data operations specialist, or want to discuss football analysis — I'd love to connect.
+        </p>
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--data-green-dim); border: 1px solid rgba(0,224,150,0.3); border-radius: var(--radius-sm); padding: 10px 18px; margin-bottom: 32px;">
+          <div style="width: 7px; height: 7px; background: var(--data-green); border-radius: 50%; animation: pulse 2s infinite;"></div>
+          <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; color: var(--data-green);">OPEN TO SPORTS DATA OPPORTUNITIES</span>
+        </div>
+        <div class="contact-items">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#00E096" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/>
+              </svg>
+            </div>
+            <div class="contact-detail">
+              <div class="label">Full Name</div>
+              <div class="value">Rajathesh H M</div>
+            </div>
+          </div>
+          <a href="mailto:rajathesh2025@gmail.com" style="display:contents;">
+            <div class="contact-item">
+              <div class="contact-icon">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#00E096" stroke-width="2">
+                  <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <div class="contact-detail">
+                <div class="label">Email</div>
+                <div class="value">rajathesh2025@gmail.com</div>
+              </div>
+            </div>
+          </a>
+          <a href="https://www.linkedin.com/in/rajathesh-hm/" target="_blank" style="display:contents;">
+            <div class="contact-item">
+              <div class="contact-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#00E096">
+                  <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/>
+                </svg>
+              </div>
+              <div class="contact-detail">
+                <div class="label">LinkedIn</div>
+                <div class="value">Connect on LinkedIn ↗</div>
+              </div>
+            </div>
+          </a>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#00E096" stroke-width="2">
+                <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <div class="contact-detail">
+              <div class="label">Location</div>
+              <div class="value">India · Open to Remote & Relocation</div>
+            </div>
+          </div>
+        </div>
+        <a href="https://www.linkedin.com/in/rajathesh-hm/" target="_blank" class="btn btn-outline" style="margin-top: 24px; width: 100%; justify-content: center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          View LinkedIn Profile
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2025 Rajathesh H M · Sports Data Analyst</div>
+    <div class="footer-links">
+      <a href="javascript:void(0)" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About</a>
+      <a href="javascript:void(0)" onclick="document.getElementById('experience').scrollIntoView({behavior:'smooth'})">Experience</a>
+      <a href="javascript:void(0)" onclick="document.getElementById('event-knowledge').scrollIntoView({behavior:'smooth'})">Events</a>
+      <a href="javascript:void(0)" onclick="document.getElementById('workflow').scrollIntoView({behavior:'smooth'})">Workflow</a>
+      <a href="mailto:rajathesh2025@gmail.com">Email</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Scroll-reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, (entry.target.dataset.delay || 0));
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.fade-up').forEach((el, i) => {
+  el.dataset.delay = (i % 3) * 80;
+  observer.observe(el);
+});
+
+// Animate skill bars on scroll
+const skillObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = w; }, 100);
+      });
+      skillObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.skills-category').forEach(el => skillObserver.observe(el));
+
+// Nav active state
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  nav.style.borderBottomColor = window.scrollY > 40
+    ? 'rgba(0,224,150,0.15)'
+    : 'rgba(255,255,255,0.06)';
+});
+</script>
+</body>
+</html>
